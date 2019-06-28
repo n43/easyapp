@@ -32,9 +32,7 @@
     "build:umd:min": "NODE_ENV=production rollup -c -o dist/easyapp-core.min.js",
     "build": "yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:umd:min",
     "prebuild": "yarn clean",
-    "test": "jest",
-    "pretest": "yarn lint && yarn build",
-    "prepare": "yarn test"
+    "prepare": "yarn lint && yarn build"
   },
   "dependencies": {
     "query-string": "6.8.1",
@@ -51,7 +49,6 @@
     "@typescript-eslint/eslint-plugin": "1.x",
     "@typescript-eslint/parser": "1.x",
     "babel-eslint": "10.x",
-    "babel-jest": "^24.8.0",
     "eslint": "5.x",
     "eslint-config-react-app": "4.0.1",
     "eslint-plugin-flowtype": "2.x",
@@ -59,7 +56,6 @@
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "1.x",
-    "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "rollup": "1.16.2",
     "rollup-plugin-babel": "4.3.3",

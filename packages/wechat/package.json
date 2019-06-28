@@ -1,14 +1,14 @@
 {
-  "name": "@easyapp/react",
+  "name": "@easyapp/wechat",
   "version": "0.1.0",
-  "description": "Easyapp React",
+  "description": "Easyapp Wechat",
   "keywords": [],
   "license": "MIT",
   "homepage": "https://github.com/n43/easyapp",
   "repository": {
     "type": "git",
     "url": "https://github.com/n43/easyapp.git",
-    "directory": "packages/react"
+    "directory": "packages/wechat"
   },
   "bugs": {
     "url": "https://github.com/n43/easyapp/issues"
@@ -16,7 +16,7 @@
   "author": "Zhu DeMing <mingenesis@qq.com>",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/easyapp-react.js",
+  "unpkg": "dist/easyapp-wechat.js",
   "files": [
     "dist",
     "es",
@@ -28,21 +28,17 @@
     "lint": "eslint src",
     "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
     "build:es": "babel src --out-dir es",
-    "build:umd": "NODE_ENV=development rollup -c -o dist/easyapp-react.js",
-    "build:umd:min": "NODE_ENV=production rollup -c -o dist/easyapp-react.min.js",
+    "build:umd": "NODE_ENV=development rollup -c -o dist/easyapp-wechat.js",
+    "build:umd:min": "NODE_ENV=production rollup -c -o dist/easyapp-wechat.min.js",
     "build": "yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:umd:min",
     "prebuild": "yarn clean",
     "prepare": "yarn lint && yarn build"
-  },
-  "dependencies": {
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
-    "react-router-dom": "5.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.5",
     "@babel/plugin-proposal-object-rest-spread": "7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
     "@babel/plugin-transform-runtime": "7.4.4",
     "@babel/preset-env": "7.4.5",
     "@typescript-eslint/eslint-plugin": "1.x",

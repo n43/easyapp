@@ -1,13 +1,9 @@
 import QueryString from 'query-string';
 
-export default function(options) {
-  options = options || {};
+export default function(options = {}) {
+  const { parseData } = options;
 
-  const { parseResponseJSON } = options;
-
-  return function fetchAPI(options) {
-    options = options || {};
-
+  return function fetchAPI(options = {}) {
     const { method, data } = options;
     let url = options.url || '';
     const init = {
@@ -31,13 +27,13 @@ export default function(options) {
 
     return fetch(url, init).then(response => {
       if (!response.ok) {
-        return { error: new Error(response.statusText) };
+        throw new Error(response.statusText);
       }
 
       let data = response.json();
 
-      if (parseResponseJSON) {
-        data = parseResponseJSON(data);
+      if (parseData) {
+        data = parseData(data);
       }
 
       return data;
