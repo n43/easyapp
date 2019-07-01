@@ -11,7 +11,12 @@ export default {
   output: {
     format: 'umd',
     name: 'EasyappReact',
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+    },
   },
+  external: ['react', 'react-dom'],
   plugins: [
     nodeResolve(),
     babel({
