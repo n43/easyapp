@@ -8,13 +8,11 @@ export function createNavigateBack(weapp = {}, apis = {}, options) {
       const path = stringifyPageRoute(getTopPageRoute());
 
       if (path === prevPath) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
           weapp.wx.miniProgram.navigateBack({
             delta: 1,
             success: () => resolve(),
-            fail: res => {
-              throw new Error(res.errMsg);
-            },
+            fail: res => reject(new Error(res.errMsg)),
           });
         });
       }
@@ -61,19 +59,17 @@ export function createRedirectTo(weapp, apis = {}, options = {}) {
 }
 
 function navTo(type, url, weapp = {}, apis, options = {}) {
-  return new Promise(resolve => {
-    const { convertToWeappNavType } = options;
+  const { convertToWeappNavType } = options;
 
-    if (convertToWeappNavType) {
-      type = convertToWeappNavType(type);
-    }
+  if (convertToWeappNavType) {
+    type = convertToWeappNavType(type);
+  }
 
+  return new Promise((resolve, reject) => {
     weapp.wx[type]({
       url,
       success: () => resolve(),
-      fail: res => {
-        throw new Error(res.errMsg);
-      },
+      fail: res => reject(new Error(res.errMsg)),
     });
   });
 }

@@ -11,10 +11,8 @@ export default function(apis = {}, options = {}) {
     .then(([ticket]) => {
       const wx = window.wx;
 
-      return new Promise(resolve => {
-        wx.error(res => {
-          throw new Error(res.errMsg);
-        });
+      return new Promise((resolve, reject) => {
+        wx.error(res => reject(new Error(res.errMsg)));
         wx.ready(() => resolve({ wx, appId: ticket.appId }));
         wx.config({ ...ticket, ...config });
       });
