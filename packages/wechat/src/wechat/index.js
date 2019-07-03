@@ -7,7 +7,7 @@ export default function(apis = {}, options = {}) {
 
   const url = window.location.href.split('#')[0];
 
-  return Promise.all([fetchTicket(url), import('./WechatSDK')])
+  return Promise.all([fetchTicket(url), import('../WechatSDK')])
     .then(([ticket]) => {
       const wx = window.wx;
 
@@ -21,9 +21,8 @@ export default function(apis = {}, options = {}) {
     })
     .then(wechat => {
       wechat.auth = createAuth(wechat, apis, options.auth);
-      apis.wechat = wechat;
 
-      return apis;
+      return { wechat };
     });
 }
 

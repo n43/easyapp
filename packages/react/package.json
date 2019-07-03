@@ -1,8 +1,11 @@
 {
   "name": "@easyapp/react",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Easyapp React",
   "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "homepage": "https://github.com/n43/easyapp",
   "repository": {
@@ -35,7 +38,12 @@
     "prepare": "yarn lint && yarn build"
   },
   "dependencies": {
-    "history": "4.9.0"
+    "@easyapp/core": "^0.1.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-redux": "7.1.0",
+    "react-router-dom": "5.0.1",
+    "redux": "4.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",

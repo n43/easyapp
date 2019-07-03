@@ -9,18 +9,18 @@ export default function(apis = {}, options = {}) {
 
   const url = window.location.href.split('#')[0];
 
-  return Promise.all([fetchTicket(url), import('./WechatSDK')])
+  return Promise.all([fetchTicket(url), import('../WechatSDK')])
     .then(([ticket]) => ({ wx: window.wx, appId: ticket.appId }))
     .then(weapp => {
-      const origAPIs = { ...apis };
+      const nextAPIs = {};
 
-      apis.navigateTo = router.createNavigateTo(weapp, origAPIs, options);
-      apis.redirectTo = router.createRedirectTo(weapp, origAPIs, options);
-      apis.navigateBack = router.createNavigateBack(weapp, origAPIs, options);
-      apis.weapp = weapp;
+      nextAPIs.navigateTo = router.createNavigateTo(weapp, apis, options);
+      nextAPIs.redirectTo = router.createRedirectTo(weapp, apis, options);
+      nextAPIs.navigateBack = router.createNavigateBack(weapp, apis, options);
+      nextAPIs.weapp = weapp;
       weapp.auth = createAuth(weapp, apis, options.auth);
 
-      return apis;
+      return nextAPIs;
     });
 }
 
