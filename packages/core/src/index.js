@@ -4,10 +4,8 @@ import createStore from './createStore';
 import * as storage from './storage';
 
 export default function(options = {}) {
-  return {
-    QueryString,
-    store: createStore(options.store),
-    fetchAPI: createFetchAPI(options.fetchAPI),
-    ...storage,
-  };
+  const store = createStore(options.store);
+  const fetchAPI = createFetchAPI(options.fetchAPI);
+
+  return { QueryString, store, dispatch: store.dispatch, fetchAPI, ...storage };
 }

@@ -17,6 +17,7 @@ export default function(apis = {}, options = {}) {
       nextAPIs.navigateTo = router.createNavigateTo(weapp, apis, options);
       nextAPIs.redirectTo = router.createRedirectTo(weapp, apis, options);
       nextAPIs.navigateBack = router.createNavigateBack(weapp, apis, options);
+      nextAPIs.dispatch = createDispatch(weapp, apis, options);
       nextAPIs.weapp = weapp;
       weapp.auth = createAuth(weapp, apis, options.auth);
 
@@ -24,7 +25,7 @@ export default function(apis = {}, options = {}) {
     });
 }
 
-function createAuth(weapp, apis, options = {}) {
+function createAuth(weapp = {}, apis = {}, options = {}) {
   return function() {
     const { appId } = weapp;
     const { QueryString } = apis;
@@ -57,5 +58,15 @@ function createAuth(weapp, apis, options = {}) {
         }
       )}#wechat_redirect`
     );
+  };
+}
+
+function createDispatch(weapp = {}, apis = {}, options) {
+  return function(action) {
+    weapp.wx.postMessage({
+      data: { type: 'ON_DISPATCH_ACTION', params: action },
+    });
+
+    return apis.dispatch(action);
   };
 }

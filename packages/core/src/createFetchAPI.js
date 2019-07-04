@@ -25,18 +25,20 @@ export default function(options = {}) {
       }
     }
 
-    return fetch(url, init).then(response => {
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
+    return fetch(url, init)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
 
-      let data = response.json();
+        return response.json();
+      })
+      .then(data => {
+        if (parseData) {
+          data = parseData(data);
+        }
 
-      if (parseData) {
-        data = parseData(data);
-      }
-
-      return data;
-    });
+        return data;
+      });
   };
 }

@@ -62,7 +62,7 @@ function navTo(type, url, weapp = {}, apis, options = {}) {
   const { convertToWeappNavType } = options;
 
   if (convertToWeappNavType) {
-    type = convertToWeappNavType(type);
+    type = convertToWeappNavType(url, type);
   }
 
   return new Promise((resolve, reject) => {
