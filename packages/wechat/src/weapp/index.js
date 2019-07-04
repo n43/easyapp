@@ -19,7 +19,8 @@ export default function(apis = {}, options = {}) {
       nextAPIs.navigateBack = router.createNavigateBack(weapp, apis, options);
       nextAPIs.dispatch = createDispatch(weapp, apis, options);
       nextAPIs.weapp = weapp;
-      weapp.auth = createAuth(weapp, apis, options.auth);
+      weapp.auth = createAuth(weapp, apis, options);
+      weapp.onShare = createOnShare(weapp, apis, options);
 
       return nextAPIs;
     });
@@ -58,6 +59,23 @@ function createAuth(weapp = {}, apis = {}, options = {}) {
         }
       )}#wechat_redirect`
     );
+  };
+}
+
+function createOnShare(weapp = {}, apis, options = {}) {
+  return function(shareDict) {
+    const { convertToWeappRoute } = options;
+    let params = null;
+
+    if (shareDict && shareDict.path && convertToWeappRoute) {
+      params = {
+        title: shareDict.title,
+        imageUrl: shareDict.imageUrl,
+        path: convertToWeappRoute(shareDict.path).url,
+      };
+    }
+
+    weapp.wx.postMessage({ data: { type: 'ON_MENU_SHARE', params } });
   };
 }
 
