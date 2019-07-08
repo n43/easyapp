@@ -20,7 +20,7 @@ export default function(apis = {}, options = {}) {
       return new Promise((resolve, reject) => {
         wx.error(res => reject(new Error(res.errMsg)));
         wx.ready(() => resolve({ wx, appId: ticket.appId }));
-        wx.config({ ...ticket, jsApiList });
+        wx.config({ ...ticket, jsApiList: jsApiList.concat() });
       });
     })
     .then(wechat => {
@@ -129,7 +129,7 @@ function createOnShare(wechat, apis, options = {}) {
 
 function createPay(wechat, apis, options = {}) {
   return function(scene) {
-    const { jsApiList, fetchPayCode = defaultFetchPayCode } = options;
+    const { jsApiList = [], fetchPayCode = defaultFetchPayCode } = options;
 
     if (jsApiList.indexOf('chooseWXPay') === -1) {
       throw new Error('需要在 options.jsApiList 中添加 chooseWXPay');
