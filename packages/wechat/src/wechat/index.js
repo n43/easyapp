@@ -144,18 +144,18 @@ function createPay(wechat, apis, options = {}) {
               'getBrandWCPayRequest',
               payCode,
               res => {
-                if (res.err_msg.indexOf('get_brand_wcpay_request:fail') === 0) {
-                  reject(new Error('微信支付失败'));
+                const errMsg = res.errMsg || res.err_msg;
+                const type = errMsg.substring(errMsg.indexOf(':') + 1);
+
+                if (type === 'ok') {
+                  resolve();
                   return;
                 }
-                if (
-                  res.err_msg.indexOf('get_brand_wcpay_request:cancel') === 0
-                ) {
+                if (type === 'cancel') {
                   reject(new Error('微信支付已取消'));
                   return;
                 }
-
-                resolve();
+                reject(new Error('微信支付失败'));
               }
             );
           })
