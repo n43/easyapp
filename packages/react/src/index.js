@@ -1,9 +1,7 @@
-import initCore from '@easyapp/core';
 import * as router from './router';
 
-export default function(options) {
-  return Promise.resolve(initCore(options)).then(apis => ({
-    ...apis,
+export default function(apis, options) {
+  return {
     ...router,
-  }));
+  };
 }
