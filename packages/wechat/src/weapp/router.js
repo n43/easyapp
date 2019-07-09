@@ -1,75 +1,61 @@
-export function createNavigateBack(weapp = {}, apis = {}, options) {
-  return function() {
-    const { stringifyPageRoute, getTopPageRoute, navigateBack } = apis;
+export default function(weapp = {}, apis = {}, options = {}) {
+  const { getTopPage, navigateBack, navigateTo, redirectTo } = apis;
+  const { convertToWeappNavType, convertToWeappPage } = options;
+  const WMP = weapp.wx.miniProgram;
 
-    const prevPath = stringifyPageRoute(getTopPageRoute());
+  function navTo(type, url) {
+    if (convertToWeappNavType) {
+      type = convertToWeappNavType(url, type);
+    }
 
-    return navigateBack().then(() => {
-      const path = stringifyPageRoute(getTopPageRoute());
-
-      if (path === prevPath) {
-        return new Promise((resolve, reject) => {
-          weapp.wx.miniProgram.navigateBack({
-            delta: 1,
-            success: () => resolve(),
-            fail: res => reject(new Error(res.errMsg)),
-          });
-        });
-      }
+    return new Promise((resolve, reject) => {
+      WMP[type]({
+        url,
+        success: () => resolve(),
+        fail: res => reject(new Error(res.errMsg)),
+      });
     });
-  };
-}
-
-export function createNavigateTo(weapp, apis = {}, options = {}) {
-  return function(route) {
-    const { navigateTo } = apis;
-    const { convertToWeappRoute } = options;
-
-    if (!convertToWeappRoute) {
-      return navigateTo(route);
-    }
-
-    const weappRoute = convertToWeappRoute(route);
-
-    if (weappRoute.web) {
-      return navigateTo(route);
-    }
-
-    return navTo('navigateTo', weappRoute.url, weapp, apis, options);
-  };
-}
-
-export function createRedirectTo(weapp, apis = {}, options = {}) {
-  return function(route) {
-    const { redirectTo } = apis;
-    const { convertToWeappRoute } = options;
-
-    if (!convertToWeappRoute) {
-      return redirectTo(route);
-    }
-
-    const weappRoute = convertToWeappRoute(route);
-
-    if (weappRoute.web) {
-      return redirectTo(route);
-    }
-
-    return navTo('redirectTo', weappRoute.url, weapp, apis, options);
-  };
-}
-
-function navTo(type, url, weapp = {}, apis, options = {}) {
-  const { convertToWeappNavType } = options;
-
-  if (convertToWeappNavType) {
-    type = convertToWeappNavType(url, type);
   }
 
-  return new Promise((resolve, reject) => {
-    weapp.wx[type]({
-      url,
-      success: () => resolve(),
-      fail: res => reject(new Error(res.errMsg)),
-    });
-  });
+  return {
+    navigateBack: () => {
+      const prevPath = getTopPage();
+
+      return navigateBack().then(() => {
+        const path = getTopPage();
+
+        if (path === prevPath) {
+          return new Promise((resolve, reject) =>
+            WMP.navigateBack({
+              delta: 1,
+              success: () => resolve(),
+              fail: res => reject(new Error(res.errMsg)),
+            })
+          );
+        }
+      });
+    },
+    navigateTo: route => {
+      if (convertToWeappPage) {
+        const weappPage = convertToWeappPage(route);
+
+        if (typeof weappPage === 'string') {
+          return navTo('navigateTo', weappPage);
+        }
+      }
+
+      return navigateTo(route);
+    },
+    redirectTo: route => {
+      if (convertToWeappPage) {
+        const weappPage = convertToWeappPage(route);
+
+        if (typeof weappPage === 'string') {
+          return navTo('redirectTo', weappPage);
+        }
+      }
+
+      return redirectTo(route);
+    },
+  };
 }

@@ -1,7 +1,5 @@
-import * as router from './router';
+import createRouter from './router';
 
 export default function(apis, options) {
-  return {
-    ...router,
-  };
+  return { ...createRouter(apis, options) };
 }

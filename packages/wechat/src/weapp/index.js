@@ -1,90 +1,79 @@
-import * as router from './router';
+import createRouter from './router';
 
 const defaultFetchTicket = () => {
-  throw new Error('必需实现options.wechat.fetchTicket方法');
+  throw new Error('初始化微信SDK，需要实现 options.fetchTicket 方法');
+};
+const defaultGetAuthURL = () => {
+  throw new Error('微信认证，需要实现 options.getAuthURL 方法');
 };
 
 export default function(apis = {}, options = {}) {
-  const { fetchTicket = defaultFetchTicket } = options;
+  const { stringifyLocation, parseLocation, dispatch } = apis;
+  const {
+    fetchTicket = defaultFetchTicket,
+    getAuthURL = defaultGetAuthURL,
+    convertToWeappPage,
+  } = options;
 
   const url = window.location.href.split('#')[0];
 
   return Promise.all([fetchTicket(url), import('../WechatSDK')])
     .then(([ticket]) => ({ wx: window.wx, appId: ticket.appId }))
     .then(weapp => {
-      const nextAPIs = {};
+      const nextAPIs = {
+        weapp,
+        dispatch: action => {
+          weapp.wx.postMessage({
+            data: { type: 'ON_DISPATCH_ACTION', params: action },
+          });
 
-      nextAPIs.navigateTo = router.createNavigateTo(weapp, apis, options);
-      nextAPIs.redirectTo = router.createRedirectTo(weapp, apis, options);
-      nextAPIs.navigateBack = router.createNavigateBack(weapp, apis, options);
-      nextAPIs.dispatch = createDispatch(weapp, apis, options);
-      nextAPIs.weapp = weapp;
-      weapp.auth = createAuth(weapp, apis, options);
-      weapp.onShare = createOnShare(weapp, apis, options);
+          return dispatch(action);
+        },
+        ...createRouter(weapp, apis, options),
+      };
+
+      weapp.auth = () => {
+        const ua = window.navigator.userAgent;
+        const loc = parseLocation(window.location.href);
+
+        if (/android/i.test(ua)) {
+          loc.searchData.t = new Date().getTime();
+        }
+
+        window.location.replace(
+          stringifyLocation({
+            pathname: 'https://open.weixin.qq.com/connect/oauth2/authorize',
+            searchData: {
+              appid: weapp.appId,
+              redirect_uri: getAuthURL(stringifyLocation(loc)),
+              response_type: 'code',
+              scope: 'snsapi_userinfo',
+            },
+            hash: '#wechat_redirect',
+          })
+        );
+      };
+
+      weapp.onShare = shareDict => {
+        let params = null;
+
+        if (shareDict && shareDict.path && convertToWeappPage) {
+          let path = convertToWeappPage(shareDict.path);
+
+          if (path && typeof path !== 'string') {
+            path = path[0];
+          }
+
+          params = {
+            title: shareDict.title,
+            imageUrl: shareDict.imageUrl,
+            path,
+          };
+        }
+
+        weapp.wx.postMessage({ data: { type: 'ON_MENU_SHARE', params } });
+      };
 
       return nextAPIs;
     });
-}
-
-function createAuth(weapp = {}, apis = {}, options = {}) {
-  return function() {
-    const { appId } = weapp;
-    const { QueryString } = apis;
-    const { getAuthURL } = options;
-
-    const location = window.location;
-    const ua = window.navigator.userAgent;
-    const loc = {
-      href: location.href,
-      origin: location.origin,
-      pathname: location.pathname,
-      search: location.search,
-      hash: location.hash,
-    };
-
-    if (/android/i.test(ua)) {
-      loc.query = QueryString.parse(loc.search);
-      loc.query.t = new Date().getTime();
-      loc.search = '?' + QueryString.stringify(loc.query);
-      loc.href = loc.origin + loc.pathname + loc.search + loc.hash;
-    }
-
-    window.location.replace(
-      `https://open.weixin.qq.com/connect/oauth2/authorize?${QueryString.stringify(
-        {
-          appid: appId,
-          redirect_uri: getAuthURL(loc),
-          response_type: 'code',
-          scope: 'snsapi_userinfo',
-        }
-      )}#wechat_redirect`
-    );
-  };
-}
-
-function createOnShare(weapp = {}, apis, options = {}) {
-  return function(shareDict) {
-    const { convertToWeappRoute } = options;
-    let params = null;
-
-    if (shareDict && shareDict.path && convertToWeappRoute) {
-      params = {
-        title: shareDict.title,
-        imageUrl: shareDict.imageUrl,
-        path: convertToWeappRoute(shareDict.path).url,
-      };
-    }
-
-    weapp.wx.postMessage({ data: { type: 'ON_MENU_SHARE', params } });
-  };
-}
-
-function createDispatch(weapp = {}, apis = {}, options) {
-  return function(action) {
-    weapp.wx.postMessage({
-      data: { type: 'ON_DISPATCH_ACTION', params: action },
-    });
-
-    return apis.dispatch(action);
-  };
 }
