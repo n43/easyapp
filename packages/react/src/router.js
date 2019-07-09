@@ -4,14 +4,16 @@ export default function(apis = {}, options) {
   const { stringifyLocation, parseLocation } = apis;
   const history = createHashHistory();
 
-  function getTopPage() {
-    const loc = history.location;
+  function reactParseLocation(loc) {
+    if (loc && typeof loc !== 'string') {
+      loc = createPath(loc);
+    }
 
-    return stringifyLocation({
-      pathname: loc.pathname,
-      search: loc.search,
-      hash: loc.hash,
-    });
+    return parseLocation(loc);
+  }
+
+  function getTopPage() {
+    return createPath(history.location);
   }
 
   function navigateTo(route) {
@@ -42,13 +44,7 @@ export default function(apis = {}, options) {
     navigateTo,
     redirectTo,
     navigateBack,
-    parseLocation: loc => {
-      if (loc && typeof loc !== 'string') {
-        loc = createPath(loc);
-      }
-
-      return parseLocation(loc);
-    },
+    parseLocation: reactParseLocation,
   };
 }
 

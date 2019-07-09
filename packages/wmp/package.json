@@ -1,7 +1,7 @@
 {
-  "name": "@easyapp/react",
-  "version": "0.1.8",
-  "description": "Easyapp React",
+  "name": "@easyapp/wmp",
+  "version": "0.1.0",
+  "description": "Easyapp Wechat MiniProgram",
   "keywords": [],
   "license": "MIT",
   "publishConfig": {
@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/n43/easyapp.git",
-    "directory": "packages/react"
+    "directory": "packages/wmp"
   },
   "bugs": {
     "url": "https://github.com/n43/easyapp/issues"
@@ -19,7 +19,7 @@
   "author": "Zhu DeMing <mingenesis@qq.com>",
   "main": "lib/index.js",
   "module": "es/index.js",
-  "unpkg": "dist/easyapp-react.js",
+  "unpkg": "dist/easyapp-wmp.js",
   "files": [
     "dist",
     "es",
@@ -31,18 +31,11 @@
     "lint": "eslint src",
     "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
     "build:es": "babel src --out-dir es",
-    "build:umd": "NODE_ENV=development rollup -c -o dist/easyapp-react.js",
-    "build:umd:min": "NODE_ENV=production rollup -c -o dist/easyapp-react.min.js",
+    "build:umd": "NODE_ENV=development rollup -c -o dist/easyapp-wmp.js",
+    "build:umd:min": "NODE_ENV=production rollup -c -o dist/easyapp-wmp.min.js",
     "build": "yarn build:commonjs && yarn build:es && yarn build:umd && yarn build:umd:min",
     "prebuild": "yarn clean",
     "prepare": "yarn lint && yarn build"
-  },
-  "dependencies": {
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
-    "react-redux": "7.1.0",
-    "react-router-dom": "5.0.1",
-    "redux": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.5.0",

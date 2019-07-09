@@ -3,10 +3,10 @@
   "version": "0.1.9",
   "description": "Easyapp Wechat",
   "keywords": [],
+  "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "license": "MIT",
   "homepage": "https://github.com/n43/easyapp",
   "repository": {
     "type": "git",
