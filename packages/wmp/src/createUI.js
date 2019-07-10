@@ -44,21 +44,15 @@ export default function(apis, options) {
         cancelColor: '#696969',
         confirmColor: '#b59f76',
         showCancel: cancelable,
-        success: res => {
-          const data = {};
-
-          if (primary === 'cancel') {
-            data.done = res.cancel;
-            data.cancel = res.confirm;
-          } else {
-            data.done = res.confirm;
-            data.cancel = res.cancel;
-          }
-
-          resolve(data);
-        },
+        success: res => resolve(res),
         fail: res => reject(new Error(res.errMsg)),
       });
+    }).then(res => {
+      if (primary === 'cancel') {
+        return { done: res.cancel, cancel: res.confirm };
+      }
+
+      return { done: res.confirm, cancel: res.cancel };
     });
   }
 

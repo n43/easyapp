@@ -1,4 +1,4 @@
-import QueryString from 'query-string';
+import { stringifyLocation } from './location';
 
 export default function(options = {}) {
   const { origin = '', parseData } = options;
@@ -11,12 +11,15 @@ export default function(options = {}) {
       credentials: 'include',
     };
 
-    url = origin + url;
+    if (url.indexOf('://') === -1) {
+      url = origin + url;
+    }
+
     init.method = (method && method.toUpperCase()) || 'GET';
 
     if (init.method === 'GET') {
       if (data) {
-        url += '?' + QueryString.stringify(data);
+        url = stringifyLocation({ pathname: url, searchData: data });
       }
     } else {
       init.headers['Content-Type'] = 'application/json';
@@ -35,11 +38,7 @@ export default function(options = {}) {
         return response.json();
       })
       .then(data => {
-        if (parseData) {
-          data = parseData(data);
-        }
-
-        return data;
+        return parseData ? parseData(data) : data;
       });
   };
 }
