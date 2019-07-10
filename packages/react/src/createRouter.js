@@ -13,7 +13,9 @@ export default function(apis = {}, options) {
   }
 
   function getTopPage() {
-    return createPath(history.location);
+    const topPage = history.location;
+
+    return createPath(topPage);
   }
 
   function navigateTo(route) {
@@ -41,9 +43,9 @@ export default function(apis = {}, options) {
   return {
     history,
     getTopPage,
+    navigateBack,
     navigateTo,
     redirectTo,
-    navigateBack,
     parseLocation: reactParseLocation,
   };
 }

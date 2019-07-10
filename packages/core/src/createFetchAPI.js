@@ -1,7 +1,7 @@
 import QueryString from 'query-string';
 
 export default function(options = {}) {
-  const { parseData } = options;
+  const { origin = '', parseData } = options;
 
   return function fetchAPI(options = {}) {
     const { method, data } = options;
@@ -11,6 +11,7 @@ export default function(options = {}) {
       credentials: 'include',
     };
 
+    url = origin + url;
     init.method = (method && method.toUpperCase()) || 'GET';
 
     if (init.method === 'GET') {
