@@ -18,8 +18,10 @@ export default function(apis = {}, options = {}) {
   const url = window.location.href.split('#')[0];
 
   function createWeapp(weapp) {
+    const WMP = weapp.wx.miniProgram;
+
     function weappDispatch(action) {
-      weapp.wx.postMessage({
+      WMP.postMessage({
         data: { type: 'ON_DISPATCH_ACTION', params: action },
       });
 
@@ -67,7 +69,9 @@ export default function(apis = {}, options = {}) {
         };
       }
 
-      weapp.wx.postMessage({ data: { type: 'ON_MENU_SHARE', params } });
+      WMP.postMessage({
+        data: { type: 'ON_MENU_SHARE', params },
+      });
     }
 
     weapp.auth = auth;

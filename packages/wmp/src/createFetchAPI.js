@@ -1,14 +1,13 @@
 import { splitCookiesString, parseCookie } from './cookie';
 
 export default function(apis, options) {
-  const { stringifyLocation } = apis;
   const { origin = '', parseData } = options;
 
   return function fetchAPI(options = {}) {
     const { method, data } = options;
     let url = options.url || '';
     const init = {
-      headers: { Accept: 'application/json', Cookie: getCookies() },
+      header: { Cookie: getCookies() },
       dataType: 'json',
     };
 
@@ -17,19 +16,9 @@ export default function(apis, options) {
     }
 
     init.method = (method && method.toUpperCase()) || 'GET';
-
-    if (init.method === 'GET') {
-      if (data) {
-        url = stringifyLocation({ pathname: url, searchData: data });
-      }
-    } else {
-      init.headers['Content-Type'] = 'application/json';
-
-      if (data) {
-        init.body = JSON.stringify(data);
-      }
+    if (data) {
+      init.data = data;
     }
-
     init.url = url;
 
     return new Promise((resolve, reject) => {
