@@ -1,27 +1,24 @@
 export function getStorage(key) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     wx.getStorage({
       key,
-      success: res => resolve(res.data),
-      fail: res => reject(new Error(res.errMsg)),
+      complete: res => resolve(res.data),
     });
   });
 }
 
 export function setStorage(key, value) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     if (value === undefined) {
       wx.removeStorage({
         key,
-        success: () => resolve(value),
-        fail: res => reject(new Error(res.errMsg)),
+        complete: () => resolve(value),
       });
     } else {
       wx.setStorage({
         key,
         data: value,
-        success: () => resolve(value),
-        fail: res => reject(new Error(res.errMsg)),
+        complete: () => resolve(value),
       });
     }
   });
