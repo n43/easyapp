@@ -6,7 +6,7 @@ import * as storage from './storage';
 
 export default function(apis, options) {
   return {
-    ...createFetchAPI(apis, options),
+    fetchAPI: createFetchAPI(apis, options.fetchAPI),
     ...createRouter(apis, options),
     ...createUI(apis, options),
     ...createWmp(apis, options),
