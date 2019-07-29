@@ -104,31 +104,29 @@ export default function(apis = {}, options = {}) {
         throw new Error('需要在 options.jsApiList 中添加 chooseWXPay');
       }
 
-      return Promise.resolve()
-        .then(() => fetchPayCode(scene))
-        .then(
-          params =>
-            new Promise((resolve, reject) => {
-              window.WeixinJSBridge.invoke(
-                'getBrandWCPayRequest',
-                params,
-                res => {
-                  const errMsg = res.errMsg || res.err_msg;
-                  const type = errMsg.substring(errMsg.indexOf(':') + 1);
+      return Promise.resolve(fetchPayCode(scene)).then(
+        params =>
+          new Promise((resolve, reject) => {
+            window.WeixinJSBridge.invoke(
+              'getBrandWCPayRequest',
+              params,
+              res => {
+                const errMsg = res.errMsg || res.err_msg;
+                const type = errMsg.substring(errMsg.indexOf(':') + 1);
 
-                  if (type === 'ok') {
-                    resolve();
-                    return;
-                  }
-                  if (type === 'cancel') {
-                    reject(new Error('微信支付已取消'));
-                    return;
-                  }
-                  reject(new Error('微信支付失败'));
+                if (type === 'ok') {
+                  resolve();
+                  return;
                 }
-              );
-            })
-        );
+                if (type === 'cancel') {
+                  reject(new Error('微信支付已取消'));
+                  return;
+                }
+                reject(new Error('微信支付失败'));
+              }
+            );
+          })
+      );
     }
 
     wechat.auth = auth;
@@ -139,7 +137,7 @@ export default function(apis = {}, options = {}) {
   }
 
   return Promise.all([
-    Promise.resolve().then(() => fetchTicket(url)),
+    Promise.resolve(fetchTicket(url)),
     import('../WechatSDK'),
   ])
     .then(([ticket]) => {
