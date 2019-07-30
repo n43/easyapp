@@ -1,4 +1,6 @@
 export default function(apis, options) {
+  const { showConfirm: showConfirmOptions } = options;
+
   function showTips(tipsType, message) {
     return new Promise((resolve, reject) => {
       wx.showToast({
@@ -37,12 +39,11 @@ export default function(apis, options) {
 
     return new Promise((resolve, reject) => {
       wx.showModal({
+        ...showConfirmOptions,
         title,
         content: message,
         cancelText,
         confirmText,
-        cancelColor: '#696969',
-        confirmColor: '#b59f76',
         showCancel: cancelable,
         success: res => resolve(res),
         fail: res => reject(new Error(res.errMsg)),
