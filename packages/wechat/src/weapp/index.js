@@ -1,3 +1,4 @@
+import QueryString from 'query-string';
 import createRouter from './createRouter';
 
 const defaultFetchTicket = () => {
@@ -8,7 +9,7 @@ const defaultGetAuthURL = () => {
 };
 
 export default function(apis = {}, options = {}) {
-  const { stringifyLocation, parseLocation, dispatch } = apis;
+  const { dispatch } = apis;
   const {
     fetchTicket = defaultFetchTicket,
     getAuthURL = defaultGetAuthURL,
@@ -29,26 +30,30 @@ export default function(apis = {}, options = {}) {
     }
 
     function auth() {
-      const loc = parseLocation(window.location.href);
       const ua = window.navigator.userAgent;
-
-      loc.hashData = undefined;
+      const loc = window.location;
+      const searchData = QueryString.parse(loc.search);
 
       if (/android/i.test(ua)) {
-        loc.searchData.t = new Date().getTime();
+        searchData.t = new Date().getTime();
       }
 
-      window.location.replace(
-        stringifyLocation({
-          pathname: 'https://open.weixin.qq.com/connect/oauth2/authorize',
-          searchData: {
+      const url =
+        loc.origin +
+        loc.pathname +
+        '?' +
+        QueryString.stringify(searchData) +
+        loc.hash;
+
+      loc.replace(
+        'https://open.weixin.qq.com/connect/oauth2/authorize?' +
+          QueryString.stringify({
             appid: weapp.appId,
-            redirect_uri: getAuthURL(stringifyLocation(loc)),
+            redirect_uri: getAuthURL(url),
             response_type: 'code',
             scope: 'snsapi_userinfo',
-          },
-          hash: '#wechat_redirect',
-        })
+          }) +
+          '#wechat_redirect'
       );
     }
 

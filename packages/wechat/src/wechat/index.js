@@ -1,3 +1,5 @@
+import QueryString from 'query-string';
+
 const defaultFetchTicket = () => {
   throw new Error('初始化微信SDK，需要实现 options.fetchTicket 方法');
 };
@@ -9,7 +11,6 @@ const defaultGetAuthURL = () => {
 };
 
 export default function(apis = {}, options = {}) {
-  const { stringifyLocation, parseLocation } = apis;
   const {
     fetchTicket = defaultFetchTicket,
     fetchPayCode = defaultFetchPayCode,
@@ -22,26 +23,30 @@ export default function(apis = {}, options = {}) {
 
   function createWechat(wechat) {
     function auth() {
-      const loc = parseLocation(window.location.href);
       const ua = window.navigator.userAgent;
-
-      loc.hashData = undefined;
+      const loc = window.location;
+      const searchData = QueryString.parse(loc.search);
 
       if (/android/i.test(ua)) {
-        loc.searchData.t = new Date().getTime();
+        searchData.t = new Date().getTime();
       }
 
-      window.location.replace(
-        stringifyLocation({
-          pathname: 'https://open.weixin.qq.com/connect/oauth2/authorize',
-          searchData: {
+      const url =
+        loc.origin +
+        loc.pathname +
+        '?' +
+        QueryString.stringify(searchData) +
+        loc.hash;
+
+      loc.replace(
+        'https://open.weixin.qq.com/connect/oauth2/authorize?' +
+          QueryString.stringify({
             appid: wechat.appId,
-            redirect_uri: getAuthURL(stringifyLocation(loc)),
+            redirect_uri: getAuthURL(url),
             response_type: 'code',
             scope: 'snsapi_userinfo',
-          },
-          hash: '#wechat_redirect',
-        })
+          }) +
+          '#wechat_redirect'
       );
     }
 
@@ -83,13 +88,18 @@ export default function(apis = {}, options = {}) {
       };
 
       if (shareDict.path) {
-        const loc = parseLocation(window.location.href);
+        const loc = window.location;
+        const searchData = QueryString.parse(loc.search);
 
-        loc.searchData.t = new Date().getTime();
-        loc.hashData = undefined;
-        loc.hash = '#' + shareDict.path;
+        searchData.t = new Date().getTime();
 
-        params.link = stringifyLocation(loc);
+        params.link =
+          loc.origin +
+          loc.pathname +
+          '?' +
+          QueryString.stringify(searchData) +
+          '#' +
+          shareDict.path;
       }
 
       jsApiList.forEach(api => {
