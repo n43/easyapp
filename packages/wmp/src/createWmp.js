@@ -1,9 +1,24 @@
-const defaultFetchPayCode = () => {
+function defaultFetchPayCode() {
   throw new Error('微信支付，需要实现 options.fetchPayCode 方法');
-};
+}
+function defaultAuthWithCode() {
+  throw new Error('微信认证，需要实现 options.authWithCode 方法');
+}
 
 export default function(apis, options) {
-  const { fetchPayCode = defaultFetchPayCode } = options;
+  const {
+    fetchPayCode = defaultFetchPayCode,
+    authWithCode = defaultAuthWithCode,
+  } = options;
+
+  function auth() {
+    return new Promise((resolve, reject) => {
+      wx.login({
+        success: res => resolve(res),
+        fail: res => reject(new Error(res.errMsg)),
+      });
+    }).then(({ code }) => authWithCode(code));
+  }
 
   function pay(scene) {
     return Promise.resolve(fetchPayCode(scene)).then(
@@ -30,5 +45,5 @@ export default function(apis, options) {
     );
   }
 
-  return { wmp: { pay } };
+  return { wmp: { auth, pay } };
 }

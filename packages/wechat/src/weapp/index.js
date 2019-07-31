@@ -1,12 +1,12 @@
 import QueryString from 'query-string';
 import createRouter from './createRouter';
 
-const defaultFetchTicket = () => {
+function defaultFetchTicket() {
   throw new Error('初始化微信SDK，需要实现 options.fetchTicket 方法');
-};
-const defaultGetAuthURL = () => {
+}
+function defaultGetAuthURL() {
   throw new Error('微信认证，需要实现 options.getAuthURL 方法');
-};
+}
 
 export default function(apis = {}, options = {}) {
   const { dispatch } = apis;
