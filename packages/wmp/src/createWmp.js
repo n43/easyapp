@@ -45,5 +45,5 @@ export default function(apis, options) {
     );
   }
 
-  return { wmp: { auth, pay } };
+  return { wmp: { wx, auth, pay } };
 }
