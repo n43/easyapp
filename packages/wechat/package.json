@@ -2,7 +2,10 @@
   "name": "@easyapp/wechat",
   "version": "0.1.12",
   "description": "Easyapp Wechat",
-  "keywords": [],
+  "keywords": [
+    "easyapp",
+    "wechat"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"

@@ -2,7 +2,11 @@
   "name": "@easyapp/core",
   "version": "0.1.8",
   "description": "Easyapp Core",
-  "keywords": [],
+  "keywords": [
+    "easyapp",
+    "redux",
+    "saga"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"

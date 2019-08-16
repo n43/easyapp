@@ -2,7 +2,10 @@
   "name": "@easyapp/wmp",
   "version": "0.1.7",
   "description": "Easyapp Wechat MiniProgram",
-  "keywords": [],
+  "keywords": [
+    "easyapp",
+    "wechat miniprogram"
+  ],
   "license": "MIT",
   "publishConfig": {
     "access": "public"
