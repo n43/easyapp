@@ -1,6 +1,6 @@
 {
   "name": "@easyapp/wmp-scripts",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Configuration and scripts for Easyapp WMP",
   "keywords": [
     "easyapp",
@@ -24,7 +24,8 @@
   "files": [
     "bin",
     "config",
-    "scripts"
+    "scripts",
+    "utils"
   ],
   "bin": {
     "wmp-scripts": "./bin/wmp-scripts.js"
