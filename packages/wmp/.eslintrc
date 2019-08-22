@@ -1,1 +1,5 @@
-{ "extends": "react-app", "globals": { "wx": true, "getCurrentPages": true } }
+{
+  "extends": "react-app",
+  "settings": { "react": { "version": "999.999.999" } },
+  "globals": { "wx": true, "getCurrentPages": true }
+}
