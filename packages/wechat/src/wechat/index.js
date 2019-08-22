@@ -19,10 +19,10 @@ export default function(apis = {}, options = {}) {
     hiddenMenuList,
   } = options;
 
-  const url = window.location.href.split('#')[0];
-
   function createWechat(wechat) {
-    function auth() {
+    const WX = wechat.wx;
+
+    function auth(params) {
       const ua = window.navigator.userAgent;
       const loc = window.location;
       const searchData = QueryString.parse(loc.search);
@@ -42,7 +42,7 @@ export default function(apis = {}, options = {}) {
         'https://open.weixin.qq.com/connect/oauth2/authorize?' +
           QueryString.stringify({
             appid: wechat.appId,
-            redirect_uri: getAuthURL(url),
+            redirect_uri: getAuthURL(url, params),
             response_type: 'code',
             scope: 'snsapi_userinfo',
           }) +
@@ -73,7 +73,7 @@ export default function(apis = {}, options = {}) {
           throw new Error('需要在 options.jsApiList 中添加 hideMenuItems');
         }
 
-        wechat.wx.hideMenuItems({ menuList });
+        WX.hideMenuItems({ menuList });
       }
 
       if (!shareDict) {
@@ -104,17 +104,17 @@ export default function(apis = {}, options = {}) {
 
       jsApiList.forEach(api => {
         if (api.indexOf('onMenuShare') === 0) {
-          wechat.wx[api](params);
+          WX[api](params);
         }
       });
     }
 
-    function pay(scene) {
+    function pay(params) {
       if (jsApiList.indexOf('chooseWXPay') === -1) {
         throw new Error('需要在 options.jsApiList 中添加 chooseWXPay');
       }
 
-      return Promise.resolve(fetchPayCode(scene)).then(
+      return Promise.resolve(fetchPayCode(params)).then(
         params =>
           new Promise((resolve, reject) => {
             window.WeixinJSBridge.invoke(
@@ -145,6 +145,8 @@ export default function(apis = {}, options = {}) {
 
     return { wechat };
   }
+
+  const url = window.location.href.split('#')[0];
 
   return Promise.all([
     Promise.resolve(fetchTicket(url)),

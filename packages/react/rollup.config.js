@@ -13,10 +13,10 @@ export default {
     name: 'EasyappReact',
     globals: {
       react: 'React',
-      'react-dom': 'ReactDOM',
+      redux: 'Redux',
     },
   },
-  external: ['react', 'react-dom'],
+  external: ['react', 'redux'],
   plugins: [
     nodeResolve(),
     babel({

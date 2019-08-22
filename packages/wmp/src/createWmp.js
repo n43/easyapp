@@ -11,17 +11,17 @@ export default function(apis, options) {
     authWithCode = defaultAuthWithCode,
   } = options;
 
-  function auth() {
+  function auth(params) {
     return new Promise((resolve, reject) => {
       wx.login({
         success: res => resolve(res),
         fail: res => reject(new Error(res.errMsg)),
       });
-    }).then(({ code }) => authWithCode(code));
+    }).then(({ code }) => authWithCode(code, params));
   }
 
-  function pay(scene) {
-    return Promise.resolve(fetchPayCode(scene)).then(
+  function pay(params) {
+    return Promise.resolve(fetchPayCode(params)).then(
       params =>
         new Promise((resolve, reject) => {
           wx.requestPayment({

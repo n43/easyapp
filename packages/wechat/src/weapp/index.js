@@ -16,8 +16,6 @@ export default function(apis = {}, options = {}) {
     convertToWeappPage,
   } = options;
 
-  const url = window.location.href.split('#')[0];
-
   function createWeapp(weapp) {
     const WMP = weapp.wx.miniProgram;
 
@@ -29,7 +27,7 @@ export default function(apis = {}, options = {}) {
       return dispatch(action);
     }
 
-    function auth() {
+    function auth(params) {
       const ua = window.navigator.userAgent;
       const loc = window.location;
       const searchData = QueryString.parse(loc.search);
@@ -49,7 +47,7 @@ export default function(apis = {}, options = {}) {
         'https://open.weixin.qq.com/connect/oauth2/authorize?' +
           QueryString.stringify({
             appid: weapp.appId,
-            redirect_uri: getAuthURL(url),
+            redirect_uri: getAuthURL(url, params),
             response_type: 'code',
             scope: 'snsapi_userinfo',
           }) +
@@ -88,6 +86,8 @@ export default function(apis = {}, options = {}) {
       ...createRouter(weapp, apis, options),
     };
   }
+
+  const url = window.location.href.split('#')[0];
 
   return Promise.all([fetchTicket(url), import('../WechatSDK')])
     .then(([ticket]) => ({ wx: window.wx, appId: ticket.appId }))
