@@ -5,8 +5,10 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
 const babel = require('rollup-plugin-babel');
 const { terser } = require('rollup-plugin-terser');
+const { eslint } = require('rollup-plugin-eslint');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
+const eslintConfig = require('./eslint.config');
 
 module.exports = function(nodeEnv) {
   // const isEnvDevelopment = nodeEnv === 'development';
@@ -22,6 +24,7 @@ module.exports = function(nodeEnv) {
     },
     plugins: [
       nodeResolve(),
+      eslint({ ...eslintConfig, throwOnError: true }),
       babel({
         babelrc: false,
         exclude: '**/node_modules/**',
