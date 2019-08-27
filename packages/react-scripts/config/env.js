@@ -7,22 +7,23 @@ const paths = require('./paths');
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths')];
 
-const WMP_ENV = process.env.WMP_ENV;
-if (!WMP_ENV) {
+const REACT_APP_ENV = process.env.REACT_APP_ENV;
+if (!REACT_APP_ENV) {
   throw new Error(
-    'The WMP_ENV environment variable is required but was not specified.'
+    'The REACT_APP_ENV environment variable is required but was not specified.'
   );
 }
 
-const dotenvFiles = [
-  `${paths.dotenv}.${WMP_ENV}.local`,
-  `${paths.dotenv}.${WMP_ENV}`,
+// https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
+var dotenvFiles = [
+  `${paths.dotenv}.${REACT_APP_ENV}.local`,
+  `${paths.dotenv}.${REACT_APP_ENV}`,
   // Don't include `.env.local` for `test` environment
   // since normally you expect tests to produce the same
   // results for everyone
-  WMP_ENV !== 'test' && `${paths.dotenv}.local`,
+  REACT_APP_ENV !== 'test' && `${paths.dotenv}.local`,
   paths.dotenv,
-];
+].filter(Boolean);
 
 // Load environment variables from .env* files. Suppress warnings using silent
 // if this file is missing. dotenv will never modify any environment variables
@@ -55,11 +56,13 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
   .map(folder => path.resolve(appDirectory, folder))
   .join(path.delimiter);
 
-const WMP = /^WMP_/i;
+// Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
+// injected into the application via DefinePlugin in Webpack configuration.
+const REACT_APP = /^REACT_APP_/i;
 
-function getClientEnvironment() {
+function getClientEnvironment(publicUrl) {
   const raw = Object.keys(process.env)
-    .filter(key => WMP.test(key))
+    .filter(key => REACT_APP.test(key))
     .reduce(
       (env, key) => {
         env[key] = process.env[key];
@@ -69,13 +72,20 @@ function getClientEnvironment() {
         // Useful for determining whether we’re running in production mode.
         // Most importantly, it switches React into the correct mode.
         NODE_ENV: process.env.NODE_ENV || 'development',
+        // Useful for resolving the correct path to static assets in `public`.
+        // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
+        // This should only be used as an escape hatch. Normally you would put
+        // images into the `src` and `import` them in code to get their paths.
+        PUBLIC_URL: publicUrl,
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
-  const stringified = Object.keys(raw).reduce((env, key) => {
-    env['process.env.' + key] = JSON.stringify(raw[key]);
-    return env;
-  }, {});
+  const stringified = {
+    'process.env': Object.keys(raw).reduce((env, key) => {
+      env[key] = JSON.stringify(raw[key]);
+      return env;
+    }, {}),
+  };
 
   return { raw, stringified };
 }
