@@ -24,7 +24,10 @@ module.exports = function(nodeEnv) {
     },
     plugins: [
       nodeResolve(),
-      eslint({ ...eslintConfig, throwOnError: true }),
+      eslint({
+        ...eslintConfig,
+        throwOnError: true,
+      }),
       babel({
         babelrc: false,
         exclude: '**/node_modules/**',

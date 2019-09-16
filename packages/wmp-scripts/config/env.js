@@ -72,10 +72,13 @@ function getClientEnvironment() {
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
-  const stringified = Object.keys(raw).reduce((env, key) => {
-    env['process.env.' + key] = JSON.stringify(raw[key]);
-    return env;
-  }, {});
+  const stringified = {
+    // 'process.env': Object.keys(raw).reduce((env, key) => {
+    //   env[key] = JSON.stringify(raw[key]);
+    //   return env;
+    // }, {}),
+    'process.env': JSON.stringify(raw),
+  };
 
   return { raw, stringified };
 }
