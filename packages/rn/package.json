@@ -1,0 +1,74 @@
+{
+  "name": "@easyapp/rn",
+  "version": "0.1.0",
+  "description": "Easyapp React Native",
+  "keywords": [
+    "easyapp",
+    "react-native"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/n43/easyapp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n43/easyapp.git",
+    "directory": "packages/rn"
+  },
+  "bugs": {
+    "url": "https://github.com/n43/easyapp/issues"
+  },
+  "author": "Zhu DeMing <mingenesis@qq.com>",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "es",
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "clean": "rimraf lib es",
+    "lint": "eslint src",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:es": "babel src --out-dir es",
+    "build": "yarn build:commonjs && yarn build:es",
+    "prebuild": "yarn clean",
+    "prepare": "yarn lint && yarn build"
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "1.6.2",
+    "react-native-gesture-handler": "1.4.1",
+    "react-native-reanimated": "1.3.0",
+    "react-native-screens": "1.0.0-alpha.23",
+    "react-navigation": "4.0.10",
+    "react-navigation-stack": "1.10.2",
+    "react-navigation-tabs": "2.5.6",
+    "react-redux": "7.1.1"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0",
+    "react-native": "^0.61.0",
+    "redux": "^4.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/plugin-transform-react-jsx": "^7.3.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "@typescript-eslint/eslint-plugin": "^2.5.0",
+    "@typescript-eslint/parser": "^2.5.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.5.1",
+    "eslint-config-react-app": "^5.0.2",
+    "eslint-plugin-flowtype": "^3.13.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "rimraf": "^3.0.0",
+    "typescript": "^3.6.4"
+  }
+}
