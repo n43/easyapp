@@ -9,6 +9,7 @@ const { eslint } = require('rollup-plugin-eslint');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 const eslintConfig = require('./eslint.config');
+const babelConfig = require('./babel.config');
 
 module.exports = function(nodeEnv) {
   // const isEnvDevelopment = nodeEnv === 'development';
@@ -26,16 +27,13 @@ module.exports = function(nodeEnv) {
       nodeResolve(),
       eslint({
         ...eslintConfig,
+        useEslintrc: false,
         throwOnError: true,
       }),
       babel({
+        ...babelConfig,
         babelrc: false,
         exclude: '**/node_modules/**',
-        presets: [['@babel/env', { loose: true, modules: false }]],
-        plugins: [
-          ['@babel/plugin-proposal-object-rest-spread', { loose: true }],
-          ['@babel/plugin-transform-runtime', { useESModules: false }],
-        ],
         runtimeHelpers: true,
       }),
       replace(env.stringified),
