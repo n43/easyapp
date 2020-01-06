@@ -20,7 +20,9 @@ export default function(apis, options) {
     }).then(({ code }) => authWithCode(code, params));
   }
 
-  function pay(params) {
+  function pay(params, options) {
+    const { subscribeMessage } = options || {};
+
     return Promise.resolve(fetchPayCode(params)).then(
       params =>
         new Promise((resolve, reject) => {
@@ -31,7 +33,20 @@ export default function(apis, options) {
               const type = errMsg.substring(errMsg.indexOf(':') + 1);
 
               if (type === 'ok') {
-                resolve();
+                if (wx.requestSubscribeMessage && subscribeMessage) {
+                  wx.requestSubscribeMessage({
+                    ...subscribeMessage,
+                    complete: res => {
+                      if (subscribeMessage.complete) {
+                        subscribeMessage.complete(res);
+                      }
+                      resolve();
+                    },
+                  });
+                } else {
+                  resolve();
+                }
+
                 return;
               }
               if (type === 'cancel') {
