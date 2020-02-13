@@ -1,8 +1,8 @@
 'use strict';
 
-const commonjs = require('rollup-plugin-commonjs');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const replace = require('rollup-plugin-replace');
+const commonjs = require('@rollup/plugin-commonjs');
+const nodeResolve = require('@rollup/plugin-node-resolve');
+const replace = require('@rollup/plugin-replace');
 const babel = require('rollup-plugin-babel');
 const { terser } = require('rollup-plugin-terser');
 const { eslint } = require('rollup-plugin-eslint');

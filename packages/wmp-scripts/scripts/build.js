@@ -17,7 +17,6 @@ require('../config/env');
 const chalk = require('react-dev-utils/chalk');
 const rollup = require('rollup');
 const configFactory = require('../config/rollup.config');
-const paths = require('../config/paths');
 const printBuildError = require('react-dev-utils/printBuildError');
 const clearBuildDir = require('../utils/clearBuildDir');
 const copyVendorsToBuildDir = require('../utils/copyVendorsToBuildDir');
