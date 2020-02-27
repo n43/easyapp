@@ -25,7 +25,12 @@ export default {
     replace({
       'process.env.NODE_ENV': JSON.stringify(env),
     }),
-    commonjs(),
+    commonjs({
+      include: /node_modules/,
+      namedExports: {
+        '../../node_modules/react-is/index.js': ['isValidElementType'],
+      },
+    }),
     env === 'production' &&
       terser({
         compress: {
