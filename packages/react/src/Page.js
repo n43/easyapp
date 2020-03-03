@@ -40,7 +40,7 @@ Page.Group = ({ children, error404, ...switchProps }) =>
   React.createElement(
     Switch,
     switchProps,
-    ...children,
+    ...React.Children.toArray(children),
     error404 ? React.createElement(Route, { component: error404 }) : null
   );
 Page.Redirect = props => React.createElement(Redirect, props);
